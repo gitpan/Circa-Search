@@ -4,6 +4,9 @@ package Circa::Search;
 # Copyright 2000 A.Barbet alian@alianwebserver.com.  All rights reserved.
 
 # $Log: Search.pm,v $
+# Revision 1.5  2000/11/23 22:53:57  Administrateur
+# Add use of template as parameter
+#
 # Revision 1.4  2000/09/28 15:56:32  Administrateur
 # - Update SQL search method
 # - Add + and - to syntax of word search
@@ -26,7 +29,7 @@ require Exporter;
 
 @ISA = qw(Exporter);
 @EXPORT = qw();
-$VERSION = ('$Revision: 1.4 $ ' =~ /(\d+\.\d+)/)[0];
+$VERSION = ('$Revision: 1.5 $ ' =~ /(\d+\.\d+)/)[0];
 
 # -------------------
 # Template par defaut
@@ -76,7 +79,7 @@ Remarques sur la recherche:
 
 =head1 VERSION
 
-$Revision: 1.4 $
+$Revision: 1.5 $
 
 =cut
 
@@ -223,6 +226,8 @@ sub search
 
 =head2 search_word($tab,$word,$idc,$langue,$Url,$create,$update,$categorie)
 
+Construction de la requete SQL. Son exploitation est faite par search
+
  $tab    : Reference du hash où mettre le resultat
  $word   : Mot recherché
  $id     : Id du site dans lequel effectué la recherche
@@ -255,7 +260,7 @@ sub search_word
 	if ($categorie) 
 		{
 		my @l=$self->get_liste_categorie_fils($categorie,$idc);
-		$categorie="and l.categorie in (".join(',',@l).')';
+		$categorie="and l.categorie in (".join(',',@l).')' if (@l);
 		} 
 	else {$categorie=' ';}	
 
@@ -286,7 +291,7 @@ sub search_word
 
 Fonction retournant la liste des categories de la categorie $id dans le site $idr
 
- $id       : Id de la categorie de depart. Si undef, 1 est utilisé (Considéré comme le "Home")
+ $id       : Id de la categorie de depart. Si undef, 0 est utilisé (Considéré comme le "Home")
  $idr	   : Id du responsable
  $template : Masque HTML pour le resultat de chaque lien. Si undef, le masque par defaut
              (defini en haut de ce module) sera utlise
@@ -300,12 +305,11 @@ Retourne ($resultat,$nom_categorie) :
 
 sub categories_in_categorie
 	{
-	my $self=shift;
-	my ($id,$idr,$template)=@_;
-	if (!$idr) {$idr=1;} 
-	if (!$id) {$id=1;}	
-	if (!$template) {$template=$templateC;}
-	my ($buf,%tab);
+	my ($self,$id,$idr,$template)=@_;
+	$idr=1 if !$idr;
+	$id=0  if !$id;
+	$template=$templateC if !$template;
+	my (@buf,%tab,$titre);
 	my $sth = $self->{DBH}->prepare("select id,nom,parent from ".$self->{PREFIX_TABLE}.$idr."categorie");
 	#print "requete:$requete\n";
 	$sth->execute() || print "Erreur $DBI::errstr\n";		
@@ -318,19 +322,20 @@ sub categories_in_categorie
 		{
 		my $nom_complet;
 		my ($nom,$parent)=($tab{$key}[0],$tab{$key}[1]);
-		if ($tab{$key}[1]!=0) {$nom_complet=$self->getParent($key,$idr,%tab);}
+		$nom_complet=$self->getParent($key,$idr,%tab);
 		my $links = $self->get_link_categorie($key,$idr);
-		if ($parent==$id) {$buf.= eval $template;}
+		if ($parent==$id) {push(@buf,eval $template);}
 		}
-	if (!$buf) {$buf="<p>Plus de catégorie</p>";}
-	return ($buf,$tab{$id}[0]);
+	if ($#buf==-1) {$buf[0]="<p>Plus de catégorie</p>";}
+	if ($id!=0) {$titre = "<a href=\"".$ENV{'SCRIPT_NAME'}."?browse_categorie=1&id=$idr\">Accueil</a> ".$self->getParent($id,$idr,%tab);}
+	return ($titre,@buf);
 	}
 
 =head2 sites_in_categorie($id,$idr,$template)
 
 Fonction retournant la liste des pages de la categorie $id dans le site $idr
 
- $id       : Id de la categorie de depart. Si undef, 1 est utilisé (Considéré comme le "Home")
+ $id       : Id de la categorie de depart. Si undef, 0 est utilisé (Considéré comme le "Home")
  $idr	   : Id du responsable 
  $template : Masque HTML pour le resultat de chaque lien. Si undef, le masque par defaut
              (defini en haut de ce module) sera utlise
@@ -344,13 +349,13 @@ sub sites_in_categorie
 	my $self=shift;
 	my ($id,$idr,$template)=@_;
 	if (!$idr) {$idr=1;}
-	if (!$id) {$id=1;}	
+	if (!$id) {$id=0;}	
 	if (!$template) {$template=$templateS;}
 	my ($buf);
 	my $requete = "
 	select 	url,titre,description,langue,last_update 
 	from 	".$self->{PREFIX_TABLE}.$idr."links 
-	where 	categorie=$id";		
+	where 	categorie=$id and browse_categorie='1' and parse='1'";		
 	my $sth = $self->{DBH}->prepare($requete);
 	$sth->execute() || print "Erreur $requete:$DBI::errstr\n";		
 	my ($facteur,$indiceG)=(100,1);
@@ -453,8 +458,7 @@ Affiche un formulaire minimum pour effectuer une recherche sur Circa
 sub advanced_form
 	{	
 	my $self=shift;
-	my ($id)=@_;
-	if (!$id) {$id=1;}
+	my ($id)=$_[0] || 1;
 	my @l;
 	my $sth = $self->{DBH}->prepare("select distinct langue from ".$self->{PREFIX_TABLE}.$id."links");
 	$sth->execute() || print "Erreur: $DBI::errstr\n";		
@@ -567,6 +571,33 @@ sub get_liste_langue
                        		-'default'=>param('langue'),
                        		-'labels'=>\%langue);
         }
+
+=head2 get_first($requete)
+
+Retourne la premiere ligne du resultat de la requete $requete sous la forme d'un tableau
+
+=cut
+
+sub get_first
+	{
+	my ($self,$requete)=@_;
+	my $sth = $self->{DBH}->prepare($requete);
+	$sth->execute || print &header,"Erreur:$requete:$DBI::errstr<br>";
+	# Pour chaque categorie
+	my @row = $sth->fetchrow_array;
+	$sth->finish;
+	return @row;
+	}
+
+=head2 get_masque
+
+=cut
+
+sub get_masque
+	{			
+	my ($self,$id)=@_;
+	return $self->get_first("select masque from ".$self->prefix_table."responsable where id=$id");	
+	}
 
 =head2 get_name_site($id)
 

@@ -78,6 +78,13 @@ in a CGI (all after name_of_file?)
 
 + Support proxy HTTP 
 
+BENCHMARK ?
+
++ Memory : Indexation : 5,5M
++ Processeur : on Sun SPARC Station 4
+(5 secondes à 2%, 2s. à 20%, 1s. à 30%) / url.
++ Size on MySQL: 2-5 ko / url.
+
 WHERE IS THE DOCUMENTATION ?
 
 You'll find very verbose documentation in the file Search.pm 

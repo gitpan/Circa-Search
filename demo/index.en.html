@@ -1,17 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html><!-- #BeginTemplate "/Templates/circa.dwt" -->
 <head>
 <!-- #BeginEditable "doctitle" --> 
 <title>Circa, moteur de recherche Internet</title>
 <!-- #EndEditable --> 
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link rel="stylesheet" href="circa.css">
+<style type="text/css">
+<!--
+body {
+  font-family: sans-serif;
+  color: black;
+  background: white;
+  margin-left : 0;
+  margin-top : 0;
+}
+th, td { /* ns 4 */
+  font-family: sans-serif;
+}
+a {font: bold; color:Navy;} 
+h1 { text-align: center }
+h2, h3, h4, h5, h6 { text-align: left }
+h1, h2, h3 { color: #005A9C; }
+h1 { font: bold 100% }
+h2 { margin:1em; font: bold 95% }
+h3 { font: 90%  }
+h4 { font: bold 85% }
+h5 { font: italic 85%  }
+h6 { text-align: right }
+ul,p { font: 80%;}
+p { text-align:justify; margin:1em;}
+.p-liens {text-align:right;}
+TH {background :  #008080; color :  White;}
+TD {}
+.td-bord {background :  Navy; color :  White;}
+.small {font:70%; }
+.h2-sans-marge {margin:0; text-align:center;}
+.without-margin {margin:0,0,0,0;}
+-->
+</style>
 </head>
 
 <body bgcolor="#FFFFFF">
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr> 
-    <td width="8%" class="td-bord">&nbsp;</td>
-    <td width="22%"><img src="images/circa_logo1.gif" width="70" height="70"><img src="images/circa_logo2.gif" width="110" height="50"> 
+    <td width="8%" class="td-bord" align="left">&nbsp;</td>
+    <td width="22%"><img src="http://www.alianwebserver.com/circa/images/circa_logo1.gif" width="70" height="70"><img src="http://www.alianwebserver.com/circa/images/circa_logo2.gif" width="110" height="50"> 
     </td>
     <td width="62%"><!-- #BeginEditable "titre" -->
       <h1>Circa</h1>
@@ -54,11 +87,12 @@
         <li>Full text indexing</li>
         <li>Different weights for title, keywords, description and rest of page 
           HTML read can be given in configuration</li>
-        <li>Boolean query language support : or (efault) and (&quot;+&quot;) not 
-          (&quot;-&quot;). Ex perl + faq -cgi : Documents with faq, eventually 
+        <li>Boolean query language support : or (default) and (&quot;+&quot;) 
+          not (&quot;-&quot;). Ex perl + faq -cgi : Documents with faq, eventually 
           perl and not cgi.</li>
         <li>Support protocol HTTP,FTP</li>
         <li>Make index in MySQL</li>
+        <li>Client Perl or PHP</li>
         <li>Read HTML and full text plain</li>
         <li>Can do indexation of filesystem without talk to Web Server </li>
         <li>Can browse site by directory / rubrique.</li>
@@ -75,7 +109,7 @@
         <li>Admin functions available by browser interface or command-line. </li>
         <li>Full support of standard robots exclusion (robots.txt). Identification 
           with CircaIndexer/0.1, mail alian@alianwebserver.com.</li>
-        <li>Delay requests to the same server for one minute. &quot;It's not a 
+        <li>Delay requests to the same server for 8 secondes. &quot;It's not a 
           bug, it's a feature!&quot; Basic rule for HTTP serveur load.</li>
         <li>Index the different links found in a CGI (all after name_of_file?)</li>
         <li>Support proxy HTTP </li>
@@ -85,14 +119,24 @@
         <li>Support NNTP</li>
         <li>Support of different character sets</li>
         <li>Support of other bases</li>
-        <li>Add a client for search in PHP</li>
+        <li>Requirement</li>
       </ul>
-      <h2>Requirement</h2>
       <ul>
         <li>MySQL</li>
         <li>Perl</li>
         <li>Modules DBI, DBD::mysql,LWP::RobotUA,HTML::LinkExtor; </li>
       </ul>
+      <h2>Benchmark</h2>
+      <p>Memory : Indexation : 5,5M<br>
+        Processeur : on Sun SPARC Station 4 : (5 secondes &agrave; 2%, 2s. &agrave; 
+        20%, 1s. &agrave; 30%) / url index&eacute;e.<br>
+        Size on MySQL: 2-5 ko / url.</p>
+      <p>Make index is a big work so it's not for CGI protocol. Try to use admin.pl 
+        to update index; if you don't have telnet acces, try to lunch processus 
+        on background with another CGI. Or install MySQL on local disk, make your 
+        index, and export index on you sarch machine.</p>
+      <h2></h2>
+      <h2></h2>
       <h2>Install</h2>
       <ul>
         <li>Download one of archive file, uncompress it.</li>
@@ -100,23 +144,29 @@
           and admin.pl (script for admin) for put your MYSQL param :user, password, 
           database and ip adress if different from 'localhost'.</li>
         <li>Run admin.cgi (CGI interface) or admin.pl (command line) for add your 
-          url, drop or create tables, ...</li>
+          url, drop or create tables, ... I suggest to prefer use admin.pl on 
+          command line because indexation can take a lot of time and is not adapted 
+          for CGI</li>
         <li>Run search.cgi. You can use the default form for use in your page. 
           Only field 'words' is necessary.</li>
+        <li>For customized HTML result, look in file circa.htm</li>
       </ul>
       <h2>Documentation</h2>
       <p>Documentation POD is available, use pod2html name_of_file.pm &gt; name_of_file.html 
         for read it.</p>
       <h2>Version</h2>
-      <p>28/09/2000 : 1.5 For Circa::Indexer, 1.4 for Circa::Search<br>
+      <p>23/11/2000 : 1.8 For Circa::Indexer, 1.5 for Circa::Search<br>
+        21/10/2000 : 1.7 For Circa::Indexer<br>
+        18/10/2000 : 1.6 For Circa::Indexer<br>
+        28/09/2000 : 1.5 For Circa::Indexer, 1.4 for Circa::Search<br>
         26/09/2000 : 1.4 For Circa::Indexer, 1.3 for Circa::Search<br>
         23/09/2000 : 1.3 For Circa::Indexer, 1.2 for Circa::Search<br>
         21/09/2000 : 1.2 for Circa::Indexer<br>
         08/09/2000 : 1.00</p>
       <h2>Download</h2>
       <p>If you have root privileges and can install Perl modules, you can install 
-        this two modules : <a href="Circa-Search-1.4.tar.gz">Circa::Search</a> 
-        et <a href="Circa-Indexer-1.5.tar.gz">Circa::Indexer</a>. See directory 
+        this two modules : <a href="Circa-Search-1.5.tar.gz">Circa::Search</a> 
+        et <a href="Circa-Indexer-1.8.tar.gz">Circa::Indexer</a>. See directory 
         demo for how use this module. Install Circa::Indexer first.</p>
       <p>Else, you can use this distrib : </p>
       <p><a href="http://www.alianwebserver.com/circa/circa.zip">Format ZIP</a> 
@@ -143,7 +193,7 @@
     <td width="8%" class="td-bord">&nbsp;</td>
     <td colspan="2"> 
       <h6>&nbsp;</h6>
-      <h6>Powered by <a href="http://www.alianwebserver.com/circa" target="_blank">AlianWebServer</a> 
+      <h6> Powered by <a href="http://www.alianwebserver.com/circa" target="_blank">AlianWebServer</a> 
       </h6>
     </td>
     <td width="8%" class="td-bord">&nbsp;</td>

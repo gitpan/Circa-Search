@@ -8,8 +8,10 @@ demo/index.fr.html
 demo/index.en.html
 demo/.htaccess
 demo/search.cgi
+demo/php3/search.php3
+demo/php3/circaLib.php3
+demo/php3/addSite.php3
 demo/search.pl
 demo/circa.htm
-demo/circa.css
 demo/images/circa_logo1.gif
 demo/images/circa_logo2.gif

@@ -1,0 +1,76 @@
+<html><!-- #BeginTemplate "/Templates/circa.dwt" -->
+<head>
+<!-- #BeginEditable "doctitle" --> 
+<title>Resultat sur <? $titre ?> de Circa avec <? $words ?></title>
+<!-- #EndEditable --> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="circa.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr> 
+    <td width="8%" class="td-bord">&nbsp;</td>
+    <td width="22%"><img src="images/circa_logo1.gif" width="70" height="70"><img src="images/circa_logo2.gif" width="110" height="50"> 
+    </td>
+    <td width="62%"><!-- #BeginEditable "titre" -->
+      <h1>Recherche sur <? $titre ?></h1>
+      <!-- #EndEditable --></td>
+    <td width="8%" class="td-bord">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="8%" class="td-bord">&nbsp;</td>
+    <td colspan="2">&nbsp;</td>
+    <td width="8%" class="td-bord">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="8%" class="td-bord">&nbsp;</td>
+    <td colspan="2"><!-- #BeginEditable "corps" --> 
+      <p><? $nb ?></p>
+      <? $resultat ?><!-- #EndEditable --></td>
+    <td width="8%" class="td-bord">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="8%" class="td-bord">&nbsp;</td>
+    <td colspan="2"><!-- #BeginEditable "bas_page" -->
+      <table width="100%">
+        <tr> 
+          <td width="50%"> 
+            <form method="POST"  enctype="application/x-www-form-urlencoded">
+              <table align=center cellpadding="0" cellspacing="0" border="0">
+                <tr> 
+                  <td> 
+                    <h2 class="h2-sans-marge">Nouvelle recherche</h2>
+                  </td>
+                </tr>
+                <tr> 
+                  <td> 
+                    <input type="text" name="word" value="<? $words ?>" size="15">
+                    <input type="hidden" name="id" value="<? $id ?>">
+                    <input type="hidden" name="categorie" value="<? $categorie ?>">
+                    <input type="submit" name=".submit" value="go">
+                  </td>
+                </tr>
+              </table>
+            </form>
+          </td>
+          <td width="50%">
+            <p class="p-liens"><? $listeLiensSuivPrec ?></p>
+          </td>
+        </tr>
+      </table>
+      <!-- #EndEditable --></td>
+    <td width="8%" class="td-bord">&nbsp;</td>
+  </tr>
+  <tr> 
+    <td width="8%" class="td-bord">&nbsp;</td>
+    <td colspan="2"> 
+      <h6>&nbsp;</h6>
+      <h6>Powered by <a href="http://www.alianwebserver.com/circa" target="_blank">AlianWebServer</a> 
+      </h6>
+    </td>
+    <td width="8%" class="td-bord">&nbsp;</td>
+  </tr>
+</table>
+</body>
+<!-- #EndTemplate --></html>

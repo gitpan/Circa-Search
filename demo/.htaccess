@@ -1,0 +1,6 @@
+AddLanguage en .en
+AddLanguage fr .fr
+LanguagePriority fr en
+DirectoryIndex index index.html index.htm
+PerlHandler Apache::Registry
+Options FollowSymLinks +Includes -Indexes +MultiViews +ExecCGI

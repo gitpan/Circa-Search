@@ -1,0 +1,15 @@
+Changes
+README
+MANIFEST
+Makefile.PL
+Search.pm
+test.pl
+demo/index.fr.html
+demo/index.en.html
+demo/.htaccess
+demo/search.cgi
+demo/search.pl
+demo/circa.htm
+demo/circa.css
+demo/images/circa_logo1.gif
+demo/images/circa_logo2.gif
